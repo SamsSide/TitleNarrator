@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "titlenarrator",
+	"version": "${version}",
+	"name": "Title Narrator",
+	"description": "Reads on-screen titles and subtitles aloud using Minecraft's narrator.",
+	"authors": [
+		"SamsSide"
+	],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"dev.samsside.titlenarrator.TitleNarratorClient"
+		],
+		"modmenu": [
+			"dev.samsside.titlenarrator.config.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		{
+			"config": "titlenarrator.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"yet_another_config_lib_v3": "*",
+		"modmenu": "*"
+	}
+}

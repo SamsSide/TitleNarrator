@@ -1,0 +1,18 @@
+{
+	"schemaVersion": 1,
+	"id": "titlenarrator-gametest",
+	"version": "1.0.0",
+	"name": "Title Narrator Game Tests",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.samsside.titlenarrator.gametest.TitleNarratorGameTest",
+			"dev.samsside.titlenarrator.gametest.ToggleKeybindGameTest",
+			"dev.samsside.titlenarrator.gametest.ConfigScreenGameTest",
+			"dev.samsside.titlenarrator.gametest.MultiplayerGameTest"
+		]
+	},
+	"depends": {
+		"titlenarrator": "*"
+	}
+}
