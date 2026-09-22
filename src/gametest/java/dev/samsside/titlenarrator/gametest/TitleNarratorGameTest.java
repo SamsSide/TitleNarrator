@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.minecraft.network.chat.Component;
 
 public final class TitleNarratorGameTest implements FabricClientGameTest {
 	private final RecordingSpeaker speaker = new RecordingSpeaker();
@@ -67,6 +68,15 @@ public final class TitleNarratorGameTest implements FabricClientGameTest {
 			run(world, "title @a actionbar \"Bar\"");
 			run(world, "title @a actionbar \"Bar\"");
 			expect("action bar enabled", "Bar");
+			// Overlay system chat takes vanilla's ChatListener path; vanilla TTS is inactive in this headless
+			// test run, so the mod must still speak it.
+			world.getServer().runOnServer(server ->
+					server.getPlayerList().broadcastSystemMessage(Component.literal("Overlay"), true));
+			world.getConnection().waitForClientboundPackets();
+			expect("overlay system message", "Bar", "Overlay");
+			if (context.computeOnClient(mc -> TitleNarratorClient.isHandlingVanillaOverlay())) {
+				throw new AssertionError("overlay flag must be cleared after vanilla handles the message");
+			}
 
 			fresh(context, world);
 			run(world, "title @a title \"ᴄʀᴀꜰᴛᴇᴅ ★\"");

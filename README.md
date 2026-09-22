@@ -46,7 +46,7 @@ Via Mod Menu → Title Narrator → Configure (needs YACL), or by editing `confi
 | Speak subtitles | `narrateSubtitles` | `true` | Add the subtitle after the title. |
 | Speak late subtitles | `lateSubtitles` | `true` | Speak a subtitle that arrives while its title is already showing. |
 | Speak action bar | `narrateActionBar` | `false` | Speak messages above the hotbar. |
-| Clean up stylised text | `sanitiseText` | `true` | Small caps → letters; drop symbols, emoji and formatting codes. |
+| Clean up stylised text | `sanitiseText` | `true` | Small caps → letters; drop symbols and emoji. (`§` formatting codes are always dropped.) |
 | Repeat suppression (ms) | `dedupeWindowMs` | `3000` | Don't repeat identical text within this window (0–10000). |
 | Interrupt current speech | `interrupt` | `true` | `false` queues new titles after the current speech instead. |
 | Speak even when Narrator is Off | `bypassNarratorSetting` | `false` | Ignore the vanilla Narrator option. |
@@ -62,6 +62,7 @@ Differences between the original spec (`docs/title-narrator-mod-spec.md`) and Mi
 - `/title clear` and `/title reset` call `Hud#clearTitles`, so they never reach `setTitle` at all.
 - Late subtitles are spoken **2 client ticks** after they arrive, and only if no title follows in that time. This stops the normal "subtitle, then title" order from reading the subtitle twice when an earlier title is still on screen.
 - Action-bar narration also picks up client-side overlay messages (for example the jukebox "Now Playing" text), because they go through the same `Hud` method.
+- Vanilla already narrates action-bar messages that servers and plugins send as *overlay system chat* (not `/title actionbar`) when the Narrator is All or System. The mod leaves those to vanilla so they aren't spoken twice, and only speaks them itself when vanilla won't.
 
 ## Building and testing
 

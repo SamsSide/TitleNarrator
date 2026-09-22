@@ -63,7 +63,7 @@ class TitleNarratorTest {
 		config.enabled = false;
 		config.narrateActionBar = true;
 		narrator.onTitle("Hello", null);
-		narrator.onActionBar("Bar");
+		narrator.onActionBar("Bar", false);
 		narrator.onSubtitle("Late", true);
 		ticks(TitleNarrator.LATE_SUBTITLE_DELAY_TICKS + 1);
 		assertEquals(List.of(), spoken);
@@ -91,6 +91,13 @@ class TitleNarratorTest {
 		config.sanitiseText = false;
 		narrator.onTitle("ᴄʀᴀꜰᴛᴇᴅ ★", null);
 		assertEquals(List.of("ᴄʀᴀꜰᴛᴇᴅ ★"), spoken);
+	}
+
+	@Test
+	void legacyFormattingCodesStrippedEvenWhenSanitisingDisabled() {
+		config.sanitiseText = false;
+		narrator.onTitle("§6§lGold ★", "§7sub");
+		assertEquals(List.of("Gold ★. sub"), spoken);
 	}
 
 	@Test
@@ -151,28 +158,37 @@ class TitleNarratorTest {
 
 	@Test
 	void actionBarOffByDefault() {
-		narrator.onActionBar("Bar");
+		narrator.onActionBar("Bar", false);
 		assertEquals(List.of(), spoken);
 	}
 
 	@Test
 	void actionBarRepeatsSuppressedWhileStillBeingSent() {
 		config.narrateActionBar = true;
-		narrator.onActionBar("Bar");
+		narrator.onActionBar("Bar", false);
 		for (int i = 0; i < 5; i++) {
 			clock.addAndGet(1000);
-			narrator.onActionBar("Bar");
+			narrator.onActionBar("Bar", false);
 		}
 		assertEquals(List.of("Bar"), spoken);
 		clock.addAndGet(config.dedupeWindowMs);
-		narrator.onActionBar("Bar");
+		narrator.onActionBar("Bar", false);
 		assertEquals(List.of("Bar", "Bar"), spoken);
+	}
+
+	@Test
+	void actionBarLeftToVanillaWhenVanillaWillSpeakIt() {
+		config.narrateActionBar = true;
+		narrator.onActionBar("Respawn point set", true);
+		assertEquals(List.of(), spoken);
+		narrator.onActionBar("Respawn point set", false);
+		assertEquals(List.of("Respawn point set"), spoken);
 	}
 
 	@Test
 	void blankActionBarIsSilent() {
 		config.narrateActionBar = true;
-		narrator.onActionBar("  ");
+		narrator.onActionBar("  ", false);
 		assertEquals(List.of(), spoken);
 	}
 

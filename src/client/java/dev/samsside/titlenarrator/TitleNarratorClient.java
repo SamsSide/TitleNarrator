@@ -19,6 +19,7 @@ public final class TitleNarratorClient implements ClientModInitializer {
 	private static @Nullable TitleNarrator narrator;
 	private static volatile @Nullable Speaker speakerOverride;
 	private static volatile @Nullable LongSupplier clockOverride;
+	private static boolean handlingVanillaOverlay;
 
 	@Override
 	public void onInitializeClient() {
@@ -57,6 +58,15 @@ public final class TitleNarratorClient implements ClientModInitializer {
 		if (config != null && configPath != null) {
 			config.save(configPath);
 		}
+	}
+
+	/** Set by the ChatListener mixin while vanilla handles an overlay system message, which it narrates itself. */
+	public static void setHandlingVanillaOverlay(boolean handling) {
+		handlingVanillaOverlay = handling;
+	}
+
+	public static boolean isHandlingVanillaOverlay() {
+		return handlingVanillaOverlay;
 	}
 
 	/** Gametest hook: route speech to {@code speaker} and read time from {@code clockMillis}. Pass nulls to restore. */

@@ -3,6 +3,7 @@
 	"package": "dev.samsside.titlenarrator.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"ChatListenerMixin",
 		"GameNarratorAccessor",
 		"HudMixin"
 	],

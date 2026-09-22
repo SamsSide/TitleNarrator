@@ -54,9 +54,13 @@ public final class TitleNarrator {
 		pendingTicks = LATE_SUBTITLE_DELAY_TICKS;
 	}
 
-	public void onActionBar(String message) {
+	/**
+	 * @param vanillaWillSpeak true when vanilla narrates this message itself (overlay system chat with the
+	 *                         Narrator on), so speaking it here would say it twice
+	 */
+	public void onActionBar(String message, boolean vanillaWillSpeak) {
 		TitleNarratorConfig cfg = config.get();
-		if (!cfg.enabled || !cfg.narrateActionBar) {
+		if (!cfg.enabled || !cfg.narrateActionBar || vanillaWillSpeak) {
 			return;
 		}
 		speakIfNew(clean(message, cfg), actionBarDeduper, cfg);
@@ -84,7 +88,7 @@ public final class TitleNarrator {
 		if (text == null) {
 			return "";
 		}
-		return cfg.sanitiseText ? TextSanitiser.sanitise(text) : text.strip();
+		return cfg.sanitiseText ? TextSanitiser.sanitise(text) : TextSanitiser.stripLegacyFormatting(text).strip();
 	}
 
 	private void speakIfNew(String text, Deduper deduper, TitleNarratorConfig cfg) {

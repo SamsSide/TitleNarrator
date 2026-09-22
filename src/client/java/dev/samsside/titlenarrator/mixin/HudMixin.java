@@ -2,6 +2,7 @@ package dev.samsside.titlenarrator.mixin;
 
 import dev.samsside.titlenarrator.TitleNarratorClient;
 import dev.samsside.titlenarrator.core.TitleNarrator;
+import dev.samsside.titlenarrator.speech.GameNarratorSpeaker;
 import net.minecraft.client.gui.Hud;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
@@ -39,7 +40,9 @@ public abstract class HudMixin {
 	private void titlenarrator$onSetOverlayMessage(Component message, boolean animateColor, CallbackInfo ci) {
 		TitleNarrator narrator = TitleNarratorClient.narrator();
 		if (narrator != null) {
-			narrator.onActionBar(message.getString());
+			boolean vanillaWillSpeak = TitleNarratorClient.isHandlingVanillaOverlay()
+					&& GameNarratorSpeaker.vanillaSpeaksSystemMessages();
+			narrator.onActionBar(message.getString(), vanillaWillSpeak);
 		}
 	}
 }

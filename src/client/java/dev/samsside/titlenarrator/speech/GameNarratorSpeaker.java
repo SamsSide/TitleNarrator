@@ -28,6 +28,12 @@ public final class GameNarratorSpeaker implements Speaker {
 		}
 	}
 
+	/** Whether vanilla's own system narration (e.g. {@code saySystemQueued}) would actually be spoken right now. */
+	public static boolean vanillaSpeaksSystemMessages() {
+		Minecraft minecraft = Minecraft.getInstance();
+		return minecraft.getNarrator().isActive() && minecraft.options.narrator().get().shouldNarrateSystem();
+	}
+
 	static void warnUnavailable() {
 		LogOnce.warn("tts-unavailable", "[Title Narrator] Text-to-speech is unavailable on this system, so titles "
 				+ "will not be spoken. On Linux, install the flite library (see README).");

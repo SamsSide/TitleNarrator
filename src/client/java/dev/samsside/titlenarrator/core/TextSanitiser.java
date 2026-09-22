@@ -16,9 +16,13 @@ public final class TextSanitiser {
 	private TextSanitiser() {
 	}
 
+	/** Removes legacy {@code §x} formatting codes, which the game renders as formatting, never as text. */
+	public static String stripLegacyFormatting(String input) {
+		return LEGACY_FORMATTING.matcher(input).replaceAll("");
+	}
+
 	public static String sanitise(String input) {
-		String text = LEGACY_FORMATTING.matcher(input).replaceAll("");
-		text = Normalizer.normalize(text, Normalizer.Form.NFKC);
+		String text = Normalizer.normalize(stripLegacyFormatting(input), Normalizer.Form.NFKC);
 		StringBuilder out = new StringBuilder(text.length());
 		text.codePoints().forEach(cp -> out.appendCodePoint(map(cp)));
 		String collapsed = WHITESPACE.matcher(out).replaceAll(" ").strip();
