@@ -8,7 +8,8 @@
 		"fabric-client-gametest": [
 			"dev.samsside.titlenarrator.gametest.TitleNarratorGameTest",
 			"dev.samsside.titlenarrator.gametest.ToggleKeybindGameTest",
-			"dev.samsside.titlenarrator.gametest.ConfigScreenGameTest"
+			"dev.samsside.titlenarrator.gametest.ConfigScreenGameTest",
+			"dev.samsside.titlenarrator.gametest.MultiplayerGameTest"
 		]
 	},
 	"depends": {
