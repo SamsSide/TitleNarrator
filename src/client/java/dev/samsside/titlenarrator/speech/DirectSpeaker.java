@@ -1,23 +1,22 @@
 package dev.samsside.titlenarrator.speech;
 
-import com.mojang.text2speech.Narrator;
-import dev.samsside.titlenarrator.mixin.GameNarratorAccessor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.sounds.SoundSource;
 
-/** Speaks through the underlying text-to-speech engine, ignoring the Narrator option. */
+/** Speaks regardless of the Narrator option, through the platform's {@link SpeechOutput}. */
 public final class DirectSpeaker implements Speaker {
+	private final SpeechOutput output;
+
+	public DirectSpeaker(SpeechOutput output) {
+		this.output = output;
+	}
+
 	@Override
 	public void speak(String text, boolean interrupt) {
-		Minecraft minecraft = Minecraft.getInstance();
-		Narrator tts = ((GameNarratorAccessor) minecraft.getNarrator()).titlenarrator$getNarrator();
-		if (!tts.active()) {
-			GameNarratorSpeaker.warnUnavailable();
+		// Vanilla's engine being inactive means the platform has no usable TTS, so ours would not work either.
+		if (!Minecraft.getInstance().getNarrator().isActive()) {
+			SpeechThread.warnUnavailable();
 			return;
 		}
-		if (interrupt) {
-			tts.clear();
-		}
-		tts.say(text, interrupt, minecraft.options.getFinalSoundSourceVolume(SoundSource.VOICE));
+		output.submit(text, interrupt, GameNarratorSpeaker.voiceVolume());
 	}
 }
