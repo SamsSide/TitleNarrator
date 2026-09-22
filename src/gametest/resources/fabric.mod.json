@@ -7,7 +7,8 @@
 	"entrypoints": {
 		"fabric-client-gametest": [
 			"dev.samsside.titlenarrator.gametest.TitleNarratorGameTest",
-			"dev.samsside.titlenarrator.gametest.ToggleKeybindGameTest"
+			"dev.samsside.titlenarrator.gametest.ToggleKeybindGameTest",
+			"dev.samsside.titlenarrator.gametest.ConfigScreenGameTest"
 		]
 	},
 	"depends": {

@@ -12,6 +12,9 @@
 	"entrypoints": {
 		"client": [
 			"dev.samsside.titlenarrator.TitleNarratorClient"
+		],
+		"modmenu": [
+			"dev.samsside.titlenarrator.config.ModMenuIntegration"
 		]
 	},
 	"mixins": [
