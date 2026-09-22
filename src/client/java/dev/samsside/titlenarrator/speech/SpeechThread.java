@@ -10,7 +10,7 @@ import org.jspecify.annotations.Nullable;
  * Speaks on a dedicated background thread with its own text-to-speech engine, so slow native calls
  * (Windows SAPI blocks for a noticeable time) never stall the render thread.
  */
-public final class SpeechThread {
+public final class SpeechThread implements SpeechOutput {
 	public static final String THREAD_NAME = "Title Narrator Speech";
 
 	private record Request(String text, boolean interrupt, float volume) {
@@ -33,6 +33,7 @@ public final class SpeechThread {
 	}
 
 	/** Queues {@code text} and returns immediately; an interrupting request drops whatever is still waiting. */
+	@Override
 	public void submit(String text, boolean interrupt, float volume) {
 		if (interrupt) {
 			queue.clear();

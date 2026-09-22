@@ -5,14 +5,13 @@ import net.minecraft.client.NarratorStatus;
 import net.minecraft.sounds.SoundSource;
 
 /**
- * Speaks only when the vanilla Narrator option is All or System. The speech itself runs on the
- * {@link SpeechThread}, never on the render thread.
+ * Speaks only when the vanilla Narrator option is All or System, through the platform's {@link SpeechOutput}.
  */
 public final class GameNarratorSpeaker implements Speaker {
-	private final SpeechThread speech;
+	private final SpeechOutput output;
 
-	public GameNarratorSpeaker(SpeechThread speech) {
-		this.speech = speech;
+	public GameNarratorSpeaker(SpeechOutput output) {
+		this.output = output;
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public final class GameNarratorSpeaker implements Speaker {
 					+ "All or System, or when 'Speak even when Narrator is Off' is enabled", status);
 			return;
 		}
-		speech.submit(text, interrupt, voiceVolume());
+		output.submit(text, interrupt, voiceVolume());
 	}
 
 	/** Whether vanilla's own system narration (e.g. {@code saySystemQueued}) would actually be spoken right now. */

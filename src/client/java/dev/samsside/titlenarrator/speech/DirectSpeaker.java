@@ -2,12 +2,12 @@ package dev.samsside.titlenarrator.speech;
 
 import net.minecraft.client.Minecraft;
 
-/** Speaks regardless of the Narrator option, on the {@link SpeechThread}. */
+/** Speaks regardless of the Narrator option, through the platform's {@link SpeechOutput}. */
 public final class DirectSpeaker implements Speaker {
-	private final SpeechThread speech;
+	private final SpeechOutput output;
 
-	public DirectSpeaker(SpeechThread speech) {
-		this.speech = speech;
+	public DirectSpeaker(SpeechOutput output) {
+		this.output = output;
 	}
 
 	@Override
@@ -17,6 +17,6 @@ public final class DirectSpeaker implements Speaker {
 			SpeechThread.warnUnavailable();
 			return;
 		}
-		speech.submit(text, interrupt, GameNarratorSpeaker.voiceVolume());
+		output.submit(text, interrupt, GameNarratorSpeaker.voiceVolume());
 	}
 }

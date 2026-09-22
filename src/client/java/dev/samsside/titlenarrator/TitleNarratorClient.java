@@ -1,12 +1,15 @@
 package dev.samsside.titlenarrator;
 
 import com.mojang.text2speech.Narrator;
+import com.mojang.text2speech.OperatingSystem;
 import dev.samsside.titlenarrator.config.TitleNarratorConfig;
 import dev.samsside.titlenarrator.core.TitleNarrator;
 import dev.samsside.titlenarrator.speech.DirectSpeaker;
 import dev.samsside.titlenarrator.speech.GameNarratorSpeaker;
 import dev.samsside.titlenarrator.speech.Speaker;
+import dev.samsside.titlenarrator.speech.SpeechOutput;
 import dev.samsside.titlenarrator.speech.SpeechThread;
+import dev.samsside.titlenarrator.speech.VanillaEngineOutput;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.LongSupplier;
@@ -28,9 +31,10 @@ public final class TitleNarratorClient implements ClientModInitializer {
 		configPath = FabricLoader.getInstance().getConfigDir().resolve("titlenarrator.json");
 		config = TitleNarratorConfig.load(configPath);
 
-		SpeechThread speech = new SpeechThread(Narrator::getNarrator);
-		Speaker gameSpeaker = new GameNarratorSpeaker(speech);
-		Speaker directSpeaker = new DirectSpeaker(speech);
+		SpeechOutput output = SpeechOutput.forPlatform(OperatingSystem.get(),
+				() -> new SpeechThread(Narrator::getNarrator), VanillaEngineOutput::new);
+		Speaker gameSpeaker = new GameNarratorSpeaker(output);
+		Speaker directSpeaker = new DirectSpeaker(output);
 		TitleNarrator created = new TitleNarrator(
 				TitleNarratorClient::config,
 				() -> {
