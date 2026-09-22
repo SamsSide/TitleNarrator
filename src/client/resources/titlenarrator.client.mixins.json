@@ -2,7 +2,9 @@
 	"required": true,
 	"package": "dev.samsside.titlenarrator.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"client": [],
+	"client": [
+		"GameNarratorAccessor"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},
