@@ -6,7 +6,8 @@
 	"environment": "client",
 	"entrypoints": {
 		"fabric-client-gametest": [
-			"dev.samsside.titlenarrator.gametest.TitleNarratorGameTest"
+			"dev.samsside.titlenarrator.gametest.TitleNarratorGameTest",
+			"dev.samsside.titlenarrator.gametest.ToggleKeybindGameTest"
 		]
 	},
 	"depends": {

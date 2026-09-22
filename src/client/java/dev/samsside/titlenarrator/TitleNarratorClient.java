@@ -42,6 +42,7 @@ public final class TitleNarratorClient implements ClientModInitializer {
 				});
 		narrator = created;
 		ClientTickEvents.END_CLIENT_TICK.register(minecraft -> created.onClientTick());
+		ToggleKeybind.register();
 	}
 
 	public static TitleNarratorConfig config() {
