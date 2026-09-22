@@ -21,6 +21,8 @@ A client-side Fabric mod for Minecraft Java **26.2** that reads on-screen **titl
 
 Minecraft only speaks when **Options → Accessibility → Narrator** is set to **All** or **System** (press `Ctrl+B` to cycle it). With it set to **Off** or **Chat**, titles stay silent — unless you turn on **Speak even when Narrator is Off**, which uses text-to-speech directly. Narration volume follows the **Voice/Speech** volume slider.
 
+Titles are spoken on a background thread with the mod's own voice, so narrating never makes the game stutter. Because of that, a title doesn't cut off something vanilla's narrator is already reading (such as chat); the two can overlap.
+
 ## Linux
 
 Minecraft's text-to-speech on Linux needs the **flite** library, which is often not installed. Without it the log shows `Failed to load library flite` and nothing is spoken; the mod logs one warning and otherwise carries on. Install the package that provides `libflite.so`, for example:
