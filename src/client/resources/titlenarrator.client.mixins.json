@@ -3,7 +3,8 @@
 	"package": "dev.samsside.titlenarrator.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"GameNarratorAccessor"
+		"GameNarratorAccessor",
+		"HudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
