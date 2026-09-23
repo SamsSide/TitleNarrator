@@ -2,6 +2,10 @@
 
 A client-side Fabric mod for Minecraft Java **26.2** that reads on-screen **titles** and **subtitles** aloud with Minecraft's built-in narrator — including titles from `/title`, command blocks, datapacks, plugins and servers. It is an accessibility and immersion mod, and it works on any server (vanilla, Paper, …) without anything installed server-side.
 
+## Why this mod exists
+
+I made Title Narrator to cut down editing time on PvP boss-style Minecraft server advertising videos. Before, every time text popped up on screen I had to generate the line with an online text-to-speech site and then insert that audio clip into the edit by hand, lining it up with the title. Now the narration happens in-game: Minecraft's built-in narrator reads each title the moment it appears, so the voice-over is already in the recording and in sync, with no separate clips to make or place.
+
 ## What gets spoken
 
 - A title, followed by its subtitle: `"Hello. World"`.
