@@ -1,17 +1,19 @@
 package dev.samsside.titlenarrator.speech;
 
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.NarratorStatus;
-import net.minecraft.sounds.SoundSource;
 
 /**
  * Speaks only when the vanilla Narrator option is All or System, through the platform's {@link SpeechOutput}.
  */
 public final class GameNarratorSpeaker implements Speaker {
 	private final SpeechOutput output;
+	private final Supplier<Float> volume;
 
-	public GameNarratorSpeaker(SpeechOutput output) {
+	public GameNarratorSpeaker(SpeechOutput output, Supplier<Float> volume) {
 		this.output = output;
+		this.volume = volume;
 	}
 
 	@Override
@@ -27,16 +29,12 @@ public final class GameNarratorSpeaker implements Speaker {
 					+ "All or System, or when 'Speak even when Narrator is Off' is enabled", status);
 			return;
 		}
-		output.submit(text, interrupt, voiceVolume());
+		output.submit(text, interrupt, volume.get());
 	}
 
 	/** Whether vanilla's own system narration (e.g. {@code saySystemQueued}) would actually be spoken right now. */
 	public static boolean vanillaSpeaksSystemMessages() {
 		Minecraft minecraft = Minecraft.getInstance();
 		return minecraft.getNarrator().isActive() && minecraft.options.narrator().get().shouldNarrateSystem();
-	}
-
-	static float voiceVolume() {
-		return Minecraft.getInstance().options.getFinalSoundSourceVolume(SoundSource.VOICE);
 	}
 }

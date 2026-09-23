@@ -4,6 +4,7 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.LongSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.samsside.titlenarrator.TitleNarratorClient;
@@ -19,6 +20,10 @@ public final class YaclScreenFactory {
 	}
 
 	public static Screen create(@Nullable Screen parent) {
+		return build().generateScreen(parent);
+	}
+
+	public static YetAnotherConfigLib build() {
 		TitleNarratorConfig config = TitleNarratorClient.config();
 		TitleNarratorConfig defaults = new TitleNarratorConfig();
 		return YetAnotherConfigLib.createBuilder()
@@ -26,6 +31,15 @@ public final class YaclScreenFactory {
 				.category(ConfigCategory.createBuilder()
 						.name(Component.translatable("titlenarrator.config.category"))
 						.option(toggle("enabled", defaults.enabled, () -> config.enabled, v -> config.enabled = v))
+						.option(Option.<Integer>createBuilder()
+								.name(Component.translatable("titlenarrator.config.narratorVolume"))
+								.description(OptionDescription.of(Component.translatable("titlenarrator.config.narratorVolume.desc")))
+								.binding(defaults.narratorVolume, () -> config.narratorVolume, v -> config.narratorVolume = v)
+								.controller(option -> IntegerSliderControllerBuilder.create(option)
+										.range(0, TitleNarratorConfig.MAX_VOLUME)
+										.step(1)
+										.formatValue(v -> Component.literal(v + "%")))
+								.build())
 						.option(toggle("narrateTitles", defaults.narrateTitles, () -> config.narrateTitles, v -> config.narrateTitles = v))
 						.option(toggle("narrateSubtitles", defaults.narrateSubtitles, () -> config.narrateSubtitles, v -> config.narrateSubtitles = v))
 						.option(toggle("lateSubtitles", defaults.lateSubtitles, () -> config.lateSubtitles, v -> config.lateSubtitles = v))
@@ -43,8 +57,7 @@ public final class YaclScreenFactory {
 						.option(toggle("bypassNarratorSetting", defaults.bypassNarratorSetting, () -> config.bypassNarratorSetting, v -> config.bypassNarratorSetting = v))
 						.build())
 				.save(TitleNarratorClient::saveConfig)
-				.build()
-				.generateScreen(parent);
+				.build();
 	}
 
 	private static Option<Boolean> toggle(String key, boolean defaultValue, Supplier<Boolean> getter, Consumer<Boolean> setter) {

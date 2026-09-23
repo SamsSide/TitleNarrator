@@ -19,7 +19,7 @@ A client-side Fabric mod for Minecraft Java **26.2** that reads on-screen **titl
 
 ## The Narrator setting
 
-Minecraft only speaks when **Options → Accessibility → Narrator** is set to **All** or **System** (press `Ctrl+B` to cycle it). With it set to **Off** or **Chat**, titles stay silent — unless you turn on **Speak even when Narrator is Off**, which uses text-to-speech directly. Narration volume follows the **Voice/Speech** volume slider.
+Minecraft only speaks when **Options → Accessibility → Narrator** is set to **All** or **System** (press `Ctrl+B` to cycle it). With it set to **Off** or **Chat**, titles stay silent — unless you turn on **Speak even when Narrator is Off**, which uses text-to-speech directly. Title narration has its own **Narrator volume** setting (0–100%), separate from Minecraft's Master and Voice/Speech sliders. To make the narrator louder than the game, keep Narrator volume high and turn Master down. Windows' voice can't go above 100%, so the narrator stands out by turning the game down, not by boosting the voice.
 
 On Windows, whose text-to-speech blocks the game while it starts speaking, titles are spoken on a background thread with the mod's own voice, so narrating never makes the game stutter. Because of that, on Windows a title doesn't cut off something vanilla's narrator is already reading (such as chat); the two can overlap. On Linux and macOS titles share vanilla's voice as before.
 
@@ -44,6 +44,7 @@ Via Mod Menu → Title Narrator → Configure (needs YACL), or by editing `confi
 | Setting | JSON key | Default | Meaning |
 |---|---|---|---|
 | Enable narration | `enabled` | `true` | Master switch (the keybind flips this). |
+| Narrator volume | `narratorVolume` | `100` | How loud titles are spoken, 0–100%. Not affected by Master or Voice/Speech. |
 | Speak titles | `narrateTitles` | `true` | Speak the large centre text. |
 | Speak subtitles | `narrateSubtitles` | `true` | Add the subtitle after the title. |
 | Speak late subtitles | `lateSubtitles` | `true` | Speak a subtitle that arrives while its title is already showing. |

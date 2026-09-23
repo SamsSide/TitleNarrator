@@ -6,6 +6,7 @@ import dev.samsside.titlenarrator.config.TitleNarratorConfig;
 import dev.samsside.titlenarrator.core.TitleNarrator;
 import dev.samsside.titlenarrator.speech.DirectSpeaker;
 import dev.samsside.titlenarrator.speech.GameNarratorSpeaker;
+import dev.samsside.titlenarrator.speech.NarratorVolume;
 import dev.samsside.titlenarrator.speech.Speaker;
 import dev.samsside.titlenarrator.speech.SpeechOutput;
 import dev.samsside.titlenarrator.speech.SpeechThread;
@@ -13,6 +14,7 @@ import dev.samsside.titlenarrator.speech.VanillaEngineOutput;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -33,8 +35,10 @@ public final class TitleNarratorClient implements ClientModInitializer {
 
 		SpeechOutput output = SpeechOutput.forPlatform(OperatingSystem.get(),
 				() -> new SpeechThread(Narrator::getNarrator), VanillaEngineOutput::new);
-		Speaker gameSpeaker = new GameNarratorSpeaker(output);
-		Speaker directSpeaker = new DirectSpeaker(output);
+		// Read on every title so a slider change applies to the next one.
+		Supplier<Float> volume = () -> NarratorVolume.fromPercent(config().narratorVolume);
+		Speaker gameSpeaker = new GameNarratorSpeaker(output, volume);
+		Speaker directSpeaker = new DirectSpeaker(output, volume);
 		TitleNarrator created = new TitleNarrator(
 				TitleNarratorClient::config,
 				() -> {
