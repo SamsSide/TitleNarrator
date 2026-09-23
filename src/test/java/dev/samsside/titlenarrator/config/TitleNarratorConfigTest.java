@@ -37,6 +37,7 @@ class TitleNarratorConfigTest {
 		assertEquals(3000, config.dedupeWindowMs);
 		assertTrue(config.interrupt);
 		assertFalse(config.bypassNarratorSetting);
+		assertEquals(100, config.narratorVolume);
 	}
 
 	@Test
@@ -52,12 +53,14 @@ class TitleNarratorConfigTest {
 		config.narrateActionBar = true;
 		config.interrupt = false;
 		config.dedupeWindowMs = 1500;
+		config.narratorVolume = 40;
 		config.save(file());
 
 		TitleNarratorConfig loaded = TitleNarratorConfig.load(file());
 		assertTrue(loaded.narrateActionBar);
 		assertFalse(loaded.interrupt);
 		assertEquals(1500, loaded.dedupeWindowMs);
+		assertEquals(40, loaded.narratorVolume);
 	}
 
 	@Test
@@ -99,6 +102,28 @@ class TitleNarratorConfigTest {
 	}
 
 	@Test
+	void narratorVolumeIsClamped() throws IOException {
+		Files.writeString(file(), "{\"narratorVolume\": 150}");
+		assertEquals(TitleNarratorConfig.MAX_VOLUME, TitleNarratorConfig.load(file()).narratorVolume);
+		Files.writeString(file(), "{\"narratorVolume\": -5}");
+		assertEquals(0, TitleNarratorConfig.load(file()).narratorVolume);
+	}
+
+	@Test
+	void missingVolumeDefaultsToFull() throws IOException {
+		Files.writeString(file(), "{\"enabled\": true, \"dedupeWindowMs\": 3000}");
+		assertEquals(100, TitleNarratorConfig.load(file()).narratorVolume);
+	}
+
+	@Test
+	void nonIntegerVolumeFallsBackToDefaults() throws IOException {
+		Files.writeString(file(), "{\"narratorVolume\": \"loud\"}");
+		assertDefaults(TitleNarratorConfig.load(file()));
+		Files.writeString(file(), "{\"narratorVolume\": 55.5}");
+		assertDefaults(TitleNarratorConfig.load(file()));
+	}
+
+	@Test
 	void saveCreatesParentDirectories() {
 		Path nested = dir.resolve("a/b/titlenarrator.json");
 		new TitleNarratorConfig().save(nested);
@@ -117,6 +142,7 @@ class TitleNarratorConfigTest {
 		source.dedupeWindowMs = 42;
 		source.interrupt = false;
 		source.bypassNarratorSetting = true;
+		source.narratorVolume = 7;
 
 		TitleNarratorConfig target = new TitleNarratorConfig();
 		target.copyFrom(source);

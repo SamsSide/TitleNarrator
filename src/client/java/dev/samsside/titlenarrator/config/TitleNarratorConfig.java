@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 /** User settings, stored as JSON in {@code config/titlenarrator.json}. Works without any config library. */
 public final class TitleNarratorConfig {
 	public static final long MAX_DEDUPE_WINDOW_MS = 10_000;
+	public static final int MAX_VOLUME = 100;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("titlenarrator");
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -27,6 +28,8 @@ public final class TitleNarratorConfig {
 	public long dedupeWindowMs = 3000;
 	public boolean interrupt = true;
 	public boolean bypassNarratorSetting = false;
+	/** Title narration loudness in percent, independent of the game's volume sliders. */
+	public int narratorVolume = 100;
 
 	public static TitleNarratorConfig load(Path path) {
 		if (!Files.exists(path)) {
@@ -69,10 +72,12 @@ public final class TitleNarratorConfig {
 		dedupeWindowMs = other.dedupeWindowMs;
 		interrupt = other.interrupt;
 		bypassNarratorSetting = other.bypassNarratorSetting;
+		narratorVolume = other.narratorVolume;
 	}
 
 	private void clamp() {
 		dedupeWindowMs = Math.clamp(dedupeWindowMs, 0, MAX_DEDUPE_WINDOW_MS);
+		narratorVolume = Math.clamp(narratorVolume, 0, MAX_VOLUME);
 	}
 
 	private static void backUp(Path path) {
