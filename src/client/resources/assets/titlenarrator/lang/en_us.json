@@ -8,6 +8,8 @@
 	"titlenarrator.config.category": "General",
 	"titlenarrator.config.enabled": "Enable narration",
 	"titlenarrator.config.enabled.desc": "Master switch. The toggle keybind flips this.",
+	"titlenarrator.config.narratorVolume": "Narrator volume",
+	"titlenarrator.config.narratorVolume.desc": "How loud titles are spoken. Independent of the game's Master and Voice/Speech sliders — to make the narrator louder than the game, keep this high and lower Master.",
 	"titlenarrator.config.narrateTitles": "Speak titles",
 	"titlenarrator.config.narrateTitles.desc": "Speak the large text shown in the middle of the screen.",
 	"titlenarrator.config.narrateSubtitles": "Speak subtitles",
