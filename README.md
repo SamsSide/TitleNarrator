@@ -10,6 +10,7 @@ I made Title Narrator to cut down editing time on PvP boss-style Minecraft serve
 
 - A title, followed by its subtitle: `"Hello. World"`.
 - A subtitle that arrives *after* its title is already on screen is spoken on its own.
+- A subtitle shown with an empty title (common for plugin and pressure-plate messages) is spoken on its own, straight away.
 - Optionally, action-bar messages (the text above the hotbar). Off by default because some servers update them every tick.
 - Formatting is dropped. Stylised text is cleaned up: small caps (`ᴄʀᴀꜰᴛᴇᴅ`) become normal letters; symbols, emoji and custom resource-pack glyphs are skipped.
 - The same text is not repeated within 3 seconds (configurable), so repeating command blocks don't spam you.

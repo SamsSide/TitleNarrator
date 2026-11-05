@@ -36,7 +36,18 @@ public final class TitleNarrator {
 	public void onTitle(String title, @Nullable String currentSubtitle) {
 		pendingLateSubtitle = null;
 		TitleNarratorConfig cfg = config.get();
-		if (!cfg.enabled || !cfg.narrateTitles || title.isBlank()) {
+		if (!cfg.enabled) {
+			return;
+		}
+		if (title.isBlank()) {
+			// A blank title still puts its subtitle on screen; plugins use this for subtitle-only messages.
+			// (/title clear and reset never reach setTitle, and leave no subtitle behind.)
+			if (cfg.narrateSubtitles) {
+				speakIfNew(clean(currentSubtitle, cfg), titleDeduper, cfg);
+			}
+			return;
+		}
+		if (!cfg.narrateTitles) {
 			return;
 		}
 		String subtitle = cfg.narrateSubtitles ? clean(currentSubtitle, cfg) : null;

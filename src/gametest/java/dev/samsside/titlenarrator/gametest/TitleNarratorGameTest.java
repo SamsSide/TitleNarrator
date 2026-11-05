@@ -50,6 +50,10 @@ public final class TitleNarratorGameTest implements FabricClientGameTest {
 			expect("clear, reset and empty title", "Shown");
 
 			fresh(context, world);
+			run(world, "title @a subtitle \"Pressure plate\"", "title @a title \"\"");
+			expect("subtitle-only title", "Pressure plate");
+
+			fresh(context, world);
 			run(world, "title @a title \"Boss\"");
 			run(world, "title @a subtitle \"Phase 2\"");
 			context.waitTicks(TitleNarrator.LATE_SUBTITLE_DELAY_TICKS + 1);

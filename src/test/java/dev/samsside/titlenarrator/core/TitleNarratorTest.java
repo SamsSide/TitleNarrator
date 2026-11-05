@@ -38,10 +38,32 @@ class TitleNarratorTest {
 	}
 
 	@Test
-	void blankTitleIsSilent() {
-		narrator.onTitle("", "World");
-		narrator.onTitle("   ", null);
+	void blankTitleWithoutSubtitleIsSilent() {
+		narrator.onTitle("", null);
+		narrator.onTitle("   ", "  ");
 		assertEquals(List.of(), spoken);
+	}
+
+	@Test
+	void blankTitleWithSubtitleSpeaksSubtitleAtOnce() {
+		narrator.onTitle(" ", "Pressure plate");
+		assertEquals(List.of("Pressure plate"), spoken);
+	}
+
+	@Test
+	void subtitleOnlyTitleIsSilentWhenSubtitlesDisabled() {
+		config.narrateSubtitles = false;
+		narrator.onTitle("", "Pressure plate");
+		assertEquals(List.of(), spoken);
+	}
+
+	@Test
+	void subtitleOnlyTitleWhilePreviousTitleVisibleIsSpokenOnce() {
+		narrator.onTitle("Boss", null);
+		narrator.onSubtitle("Pressure plate", true);
+		narrator.onTitle("", "Pressure plate");
+		ticks(TitleNarrator.LATE_SUBTITLE_DELAY_TICKS + 1);
+		assertEquals(List.of("Boss", "Pressure plate"), spoken);
 	}
 
 	@Test
