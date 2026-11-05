@@ -8,6 +8,10 @@ import java.util.function.Supplier;
 public interface SpeechOutput {
 	void submit(String text, boolean interrupt, float volume);
 
+	/** Prepares the engine ahead of the first title so it is spoken without a cold-start delay. Must not block. */
+	default void warmUp() {
+	}
+
 	/**
 	 * Only Windows' engine blocks the calling thread (synchronous SAPI calls), so only Windows speaks on a
 	 * {@link SpeechThread}. Linux's engine is already asynchronous, and macOS's needs the main thread's run loop to

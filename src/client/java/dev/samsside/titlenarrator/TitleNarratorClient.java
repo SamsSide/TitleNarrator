@@ -35,6 +35,10 @@ public final class TitleNarratorClient implements ClientModInitializer {
 
 		SpeechOutput output = SpeechOutput.forPlatform(OperatingSystem.get(),
 				() -> new SpeechThread(Narrator::getNarrator), VanillaEngineOutput::new);
+		if (config.enabled) {
+			// A cold Windows voice takes over a second to say its first word; warm it in the background now.
+			output.warmUp();
+		}
 		// Read on every title so a slider change applies to the next one.
 		Supplier<Float> volume = () -> NarratorVolume.fromPercent(config().narratorVolume);
 		Speaker gameSpeaker = new GameNarratorSpeaker(output, volume);

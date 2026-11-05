@@ -25,7 +25,7 @@ I made Title Narrator to cut down editing time on PvP boss-style Minecraft serve
 
 Minecraft only speaks when **Options → Accessibility → Narrator** is set to **All** or **System** (press `Ctrl+B` to cycle it). With it set to **Off** or **Chat**, titles stay silent — unless you turn on **Speak even when Narrator is Off**, which uses text-to-speech directly. Title narration has its own **Narrator volume** setting (0–100%), separate from Minecraft's Master and Voice/Speech sliders. To make the narrator louder than the game, keep Narrator volume high and turn Master down. Windows' voice can't go above 100%, so the narrator stands out by turning the game down, not by boosting the voice.
 
-On Windows, whose text-to-speech blocks the game while it starts speaking, titles are spoken on a background thread with the mod's own voice, so narrating never makes the game stutter. Because of that, on Windows a title doesn't cut off something vanilla's narrator is already reading (such as chat); the two can overlap. On Linux and macOS titles share vanilla's voice as before.
+On Windows, whose text-to-speech blocks the game while it starts speaking, titles are spoken on a background thread with the mod's own voice, so narrating never makes the game stutter. Because of that, on Windows a title doesn't cut off something vanilla's narrator is already reading (such as chat); the two can overlap. On Linux and macOS titles share vanilla's voice as before. The Windows voice is loaded in the background when the game starts (if narration is enabled), so even the first title is spoken within a few dozen milliseconds instead of after a one-to-two-second warm-up.
 
 ## Linux
 

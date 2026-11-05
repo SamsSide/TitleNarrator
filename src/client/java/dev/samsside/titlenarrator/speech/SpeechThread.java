@@ -9,6 +9,10 @@ import org.jspecify.annotations.Nullable;
 /**
  * Speaks on a dedicated background thread with its own text-to-speech engine, so slow native calls
  * (Windows SAPI blocks for a noticeable time) never stall the render thread.
+ *
+ * <p>Creating a SAPI voice and making its first {@code Speak} call takes over a second on a cold system, while a
+ * warm voice starts talking in about 50 ms. {@link #warmUp()} pays that cost at launch, so the first title is
+ * spoken as quickly as every later one.
  */
 public final class SpeechThread implements SpeechOutput {
 	public static final String THREAD_NAME = "Title Narrator Speech";
@@ -17,6 +21,10 @@ public final class SpeechThread implements SpeechOutput {
 	}
 
 	private static final Request STOP = new Request("", false, 0);
+	/** Creates the engine and speaks nothing at volume 0, which loads the voice and opens the audio output. */
+	private static final Request WARM_UP = new Request("", false, 0);
+	/** Above normal, so a new title wakes the worker at once even while the render thread keeps the CPU busy. */
+	static final int WORKER_PRIORITY = Thread.NORM_PRIORITY + 3;
 
 	private final Supplier<Narrator> engineFactory;
 	private final LinkedBlockingDeque<Request> queue = new LinkedBlockingDeque<>();
@@ -29,6 +37,7 @@ public final class SpeechThread implements SpeechOutput {
 		this.engineFactory = engineFactory;
 		this.worker = new Thread(this::run, THREAD_NAME);
 		this.worker.setDaemon(true);
+		this.worker.setPriority(WORKER_PRIORITY);
 		this.worker.start();
 	}
 
@@ -39,6 +48,12 @@ public final class SpeechThread implements SpeechOutput {
 			queue.clear();
 		}
 		queue.add(new Request(text, interrupt, volume));
+	}
+
+	/** Creates and primes the engine on the worker thread now, instead of on the first title. Returns at once. */
+	@Override
+	public void warmUp() {
+		queue.add(WARM_UP);
 	}
 
 	/** Speaks what is already queued, then stops the worker and releases the engine. */
@@ -76,9 +91,7 @@ public final class SpeechThread implements SpeechOutput {
 				warnUnavailable();
 				return;
 			}
-			if (request.interrupt()) {
-				tts.clear();
-			}
+			// An interrupting say already purges the engine (SAPI SPF_PURGEBEFORESPEAK), so no separate clear().
 			tts.say(request.text(), request.interrupt(), request.volume());
 		} catch (RuntimeException e) {
 			LogOnce.warn("speak-failed", "[Title Narrator] Speaking failed; further failures will not be logged", e);

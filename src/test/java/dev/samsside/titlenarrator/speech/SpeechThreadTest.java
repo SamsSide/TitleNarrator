@@ -109,7 +109,48 @@ class SpeechThreadTest {
 		speech.submit("d", true, 1.0f);
 		engine.release.countDown();
 		assertTrue(engine.spoken.await(2, TimeUnit.SECONDS));
-		assertEquals(List.of("say:a:false:1.0", "clear", "say:d:true:1.0"), engine.calls);
+		// The interrupting say purges the engine itself, so no separate (synchronous) clear call is made.
+		assertEquals(List.of("say:a:false:1.0", "say:d:true:1.0"), engine.calls);
+	}
+
+	@Test
+	void warmUpCreatesEngineAndPrimesItSilentlyOnWorkerThread() throws InterruptedException {
+		FakeEngine engine = new FakeEngine(2, false);
+		AtomicInteger created = new AtomicInteger();
+		List<String> creatingThread = new CopyOnWriteArrayList<>();
+		speech = new SpeechThread(() -> {
+			created.incrementAndGet();
+			creatingThread.add(Thread.currentThread().getName());
+			return engine;
+		});
+		speech.warmUp();
+		assertTrue(engine.firstSayStarted.await(2, TimeUnit.SECONDS));
+		speech.submit("hello", true, 1.0f);
+		assertTrue(engine.spoken.await(2, TimeUnit.SECONDS));
+		assertEquals(1, created.get());
+		assertEquals(List.of(SpeechThread.THREAD_NAME), creatingThread);
+		assertEquals(List.of("say::false:0.0", "say:hello:true:1.0"), engine.calls);
+		assertTrue(engine.threads.stream().allMatch(SpeechThread.THREAD_NAME::equals));
+	}
+
+	@Test
+	void warmUpOnInactiveEngineSaysNothing() throws InterruptedException {
+		FakeEngine engine = new FakeEngine(1, false);
+		engine.active = false;
+		speech = new SpeechThread(() -> engine);
+		speech.warmUp();
+		speech.close();
+		assertFalse(engine.calls.stream().anyMatch(c -> c.startsWith("say")));
+	}
+
+	@Test
+	void workerRunsAboveNormalPriority() {
+		speech = new SpeechThread(() -> new FakeEngine(0, false));
+		Thread worker = Thread.getAllStackTraces().keySet().stream()
+				.filter(t -> SpeechThread.THREAD_NAME.equals(t.getName()))
+				.findFirst()
+				.orElseThrow();
+		assertTrue(worker.getPriority() > Thread.NORM_PRIORITY);
 	}
 
 	@Test
